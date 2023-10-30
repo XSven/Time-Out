@@ -1,5 +1,8 @@
-Time::Out - Easy timeouts
-=========================
+NAME
+
+Time::Out - Easily timeout long running operations
+
+EXAMPLE
 
   use Time::Out qw(timeout);
 
@@ -11,23 +14,37 @@ Time::Out - Easy timeouts
     # timeout occured...
   }
 
-
 INSTALLATION
 
-Note: Your system must support alarm(2).
+Your system must support alarm(2). To install this module manually, run the
+following commands:
 
-To install this module type the following:
+  perl Makefile.PL
+  make
+  make test
+  make install
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+DOCUMENTATION
 
+After the installation, you can find further documentation using the commands:
 
-COPYRIGHT AND LICENCE
+  perldoc Time::Out
 
-Copyright (C) 2005-2008 Patrick LeBoutillier
+MAINTENANCE
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+To maintain this module, run the following commands:
 
+  perl Makefile.PL
+  make PERL_CPANM_OPT="--with-recommends --with-suggests" installdeps 
+  make
+  make test
+
+The second command installs the module dependencies in a "local" directory
+using "cpanm".
+
+COPYRIGHT AND LICENSE
+
+Copyright (c) 2005-2008 Patrick LeBoutillier
+
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
