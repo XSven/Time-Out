@@ -6,8 +6,8 @@ package Time::Out;
 
 our $VERSION = '0.11';
 
+use Carp     qw( carp croak );
 use Exporter qw( import );
-use Carp;
 
 BEGIN {
   if ( Time::HiRes->can( 'alarm' ) ) {
