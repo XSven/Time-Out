@@ -1,8 +1,11 @@
+#<<<
+use strict; use warnings;
+#>>>
+
 package Time::Out;
 @ISA       = qw( Exporter );
 @EXPORT_OK = qw( timeout );
 
-use strict;
 use Exporter;
 use Carp;
 
