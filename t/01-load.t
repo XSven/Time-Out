@@ -1,12 +1,9 @@
-use strict ;
-use warnings ;
-use Test ;
+#<<<
+use strict; use warnings;
+#>>>
+
+use Test::More tests => 1;
 
 BEGIN {
-	plan(tests => 1) ;
+  use_ok 'Time::Out' or BAIL_OUT 'Cannot load Time::Out module!';
 }
-
-use Time::Out ;
-ok(1) ;
-
-
