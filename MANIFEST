@@ -11,3 +11,4 @@ t/01-load.t
 t/02-basic.t
 t/03-exceptions.t
 t/04-pod.t
+t/05-RT-100886.t
