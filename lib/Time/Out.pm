@@ -3,10 +3,10 @@ use strict; use warnings;
 #>>>
 
 package Time::Out;
-@ISA       = qw( Exporter );
-@EXPORT_OK = qw( timeout );
 
-use Exporter;
+our $VERSION = '0.11';
+
+use Exporter qw( import );
 use Carp;
 
 BEGIN {
@@ -18,7 +18,7 @@ BEGIN {
   }
 }
 
-$Time::Out::VERSION = '0.11';
+our @EXPORT_OK = qw( timeout );
 
 sub timeout($@) {
   my $secs = shift;
