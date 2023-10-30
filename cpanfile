@@ -16,7 +16,7 @@ on 'runtime' => sub {
   requires 'Carp'     => '0';
   requires 'Exporter' => '0';
   requires 'strict'   => '0';
-  recommends 'Time::HiRes' => '0';
+  recommends 'Time::HiRes' => '>= 1.9726';
 };
 
 on 'test' => sub {
