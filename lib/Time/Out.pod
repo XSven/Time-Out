@@ -18,13 +18,13 @@ Time::Out - Easily timeout long running operations
 
 =head1 DESCRIPTION
 
-C<Time::Out> provides an easy interface to I<alarm(2)> based timeouts. 
-Nested timeouts are supported.
+C<Time::Out> provides an easy interface to alarm(2) based timeouts.  Nested
+timeouts are supported.
 
 
 =head2 RETURN VALUE
 
-'timeout' returns whatever the code placed inside the block returns:
+C<timeout()> returns whatever the code placed inside the block returns:
 
   use Time::Out qw(timeout) ;
 
@@ -36,9 +36,9 @@ Nested timeouts are supported.
 
 =head1 C<Time::HiRes>
 
-If C<Time::Out> sees that C<Time::HiRes> has been loaded, it will use 
-that 'alarm' function (if available) instead of the default one, allowing 
-float timeout values to be used effectively:
+If C<Time::Out> sees that C<Time::HiRes> has been loaded, it will use that
+C<alarm()> function (if available) instead of the default one, allowing float
+timeout values to be used effectively:
 
   use Time::Out ;
   use Time::HiRes ;
@@ -54,16 +54,16 @@ float timeout values to be used effectively:
 
 =item Blocking I/O on MSWin32
 
-I<alarm(2)> doesn't interrupt blocking I/O on MSWin32, so 'timeout' won't
-do that either.
+alarm(2) doesn't interrupt blocking I/O on MSWin32, so C<timeout()> won't do
+that either.
 
 =item @_
 
-One drawback to using 'timeout' is that it masks @_ in the affected code. 
-This happens because the affected code is actually wrapped inside another 
-subroutine that provides it's own @_. You can get around this by 
-specifically passing your @_ (or whatever you want for that matter) to 
-'timeout' as such:
+One drawback to using C<timeout()> is that it masks C<@_> in the affected
+code.  This happens because the affected code is actually wrapped inside
+another subroutine that provides it's own C<@_>. You can get around this by
+specifically passing your C<@_> (or whatever you want for that matter) to
+C<timeout()> as such:
 
   use Time::Out ;
 
@@ -77,22 +77,20 @@ specifically passing your @_ (or whatever you want for that matter) to
 
 =back
 
-
 =head1 SEE ALSO
 
-eval, closures, I<alarm(2)>, L<Sys::AlarmCall>
+eval, closures, alarm(2), L<Sys::AlarmCall>
 
 
 =head1 AUTHOR
 
 Patrick LeBoutillier, E<lt>patl@cpan.orgE<gt>
 
-
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2005-2008 by Patrick LeBoutillier
+Copyright (c) 2005-2008 Patrick LeBoutillier
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
+This library is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
 
 =cut
