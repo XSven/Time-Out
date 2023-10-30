@@ -1,12 +1,12 @@
 Changes
+LICENSE
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
+META.yml
 Out.pm
 Out.pod
 README
-LICENSE
-t/01_init.t
-t/02_usage.t
-t/03_exceptions.t
-t/pod.t
-META.yml                                 Module meta-data (added by MakeMaker)
+t/01-load.t
+t/02-basic.t
+t/03-exceptions.t
+t/04-pod.t
