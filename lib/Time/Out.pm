@@ -10,11 +10,9 @@ use Carp     qw( carp croak );
 use Exporter qw( import );
 
 BEGIN {
-  if ( Time::HiRes->can( 'alarm' ) ) {
-    Time::HiRes->import( 'alarm' );
-  }
-  if ( Time::HiRes->can( 'time' ) ) {
-    Time::HiRes->import( 'time' );
+  #  If possible use Time::HiRes drop-in replacements.
+  for ( qw( alarm time ) ) {
+    Time::HiRes->import( $_ ) if Time::HiRes->can( $_ );
   }
 }
 

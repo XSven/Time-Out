@@ -2,9 +2,11 @@
 use strict; use warnings;
 #>>>
 
-use Test::More tests => 3;
-
+# Load Time::Out before Test::More: Recent version of Test::More load
+# Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
+
+use Test::More tests => 3;
 
 # exception
 eval {
