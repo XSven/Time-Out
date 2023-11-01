@@ -13,9 +13,10 @@ on 'configure' => sub {
 };
 
 on 'runtime' => sub {
-  requires 'Carp'     => '0';
-  requires 'Exporter' => '0';
-  requires 'strict'   => '0';
+  requires 'Carp'         => '0';
+  requires 'Exporter'     => '0';
+  requires 'Scalar::Util' => '0';
+  requires 'strict'       => '0';
   recommends 'Time::HiRes' => '>= 1.9726';
 };
 

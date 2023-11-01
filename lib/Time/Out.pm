@@ -6,8 +6,13 @@ package Time::Out;
 
 our $VERSION = '0.11';
 
-use Carp     qw( carp croak );
-use Exporter qw( import );
+use Carp         qw( carp );
+use Exporter     qw( import );
+use Scalar::Util qw( blessed );
+
+sub _croakf ( $@ );
+sub _assert_plain_coderef ( $ );
+sub _is_plain_coderef ( $ );
 
 BEGIN {
   #  If possible use Time::HiRes drop-in replacements.
@@ -21,8 +26,7 @@ our @EXPORT_OK = qw( timeout );
 sub timeout($@) {
   my $secs = shift;
   carp( 'Timeout value evaluates to 0: no timeout will be set' ) if !$secs;
-  my $code = pop;
-  usage() unless ( ( defined( $code ) ) && ( UNIVERSAL::isa( $code, 'CODE' ) ) );
+  my $code       = _assert_plain_coderef pop;
   my @other_args = @_;
 
   # Disable any pending alarms.
@@ -67,7 +71,7 @@ sub timeout($@) {
         chomp( $dollar_at );
         die( "$dollar_at\n" );
       } else {
-        croak $dollar_at;
+        die $dollar_at;
       }
     }
   }
@@ -75,8 +79,19 @@ sub timeout($@) {
   return wantarray ? @ret : $ret[ 0 ];
 }
 
-sub usage {
-  croak( "Usage: timeout \$nb_secs => sub {\n  #code\n} ;\n" );
+sub _assert_plain_coderef ( $ ) {
+  _is_plain_coderef $_[ 0 ] ? $_[ 0 ] : _croakf 'value is not a code reference';
+}
+
+sub _is_plain_coderef( $ ) {
+  not defined blessed $_[ 0 ] and ref $_[ 0 ] eq 'CODE';
+}
+
+sub _croakf ( $@ ) {
+  # load Carp lazily
+  require Carp;
+  @_ = ( ( @_ == 1 ? shift : sprintf shift, @_ ) . ', stopped' );
+  goto &Carp::croak;
 }
 
 1;
