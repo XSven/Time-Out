@@ -6,7 +6,7 @@ use strict; use warnings;
 # Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
 
-use Test::More tests => 3;
+use Test::More import => [ qw( is like ) ], tests => 3;
 
 # exception
 eval {

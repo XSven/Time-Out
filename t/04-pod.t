@@ -2,7 +2,7 @@
 use strict; use warnings;
 #>>>
 
-use Test::More;
+use Test::More import => [ qw( plan ) ];
 
 plan skip_all => 'POD files checking (RELEASE_TESTING environment variable not set)'
   unless $ENV{ RELEASE_TESTING };

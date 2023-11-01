@@ -8,7 +8,7 @@ eval "use Time::HiRes $minimum_th_version";
 my $th_check = $@;
 use Time::Out qw( timeout );
 
-use Test::More;
+use Test::More import => [ qw( is plan ) ];
 
 plan $th_check ? ( skip_all => "Nested timeouts (Time::HiRes $minimum_th_version required)" ) : ( tests => 2 );
 

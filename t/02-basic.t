@@ -6,7 +6,7 @@ use strict; use warnings;
 # Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
 
-use Test::More tests => 14;
+use Test::More import => [ qw( diag is ok skip ) ], tests => 14;
 
 diag( "\nThe following tests use sleep() so please be patient...\n" );
 
