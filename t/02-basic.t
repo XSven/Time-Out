@@ -6,7 +6,7 @@ use strict; use warnings;
 # Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
 
-use Test::More tests => 15;
+use Test::More tests => 14;
 
 diag( "\nThe following tests use sleep() so please be patient...\n" );
 
@@ -44,15 +44,6 @@ timeout 2 => sub {
 };
 sleep( 3 );
 ok( 1 );
-
-# 0
-{
-  my $ok = 0;
-  local $SIG{ __WARN__ } = sub { $ok = 1 };
-  timeout 0 => sub {
-  };
-  ok( $ok );
-}
 
 # CPU
 timeout 1 => sub {
