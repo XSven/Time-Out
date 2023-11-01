@@ -8,13 +8,18 @@ use Config         qw( %Config );
 use File::Basename qw( basename );
 use File::Spec     qw();
 
-my ( $local_lib_root, $local_lib );
+my ( $local_lib_root, $local_bin, $local_lib );
 
 BEGIN {
-  $local_lib_root = "$ENV{ PWD }/local";
-  $local_lib      = "$local_lib_root/lib/perl5";
+  $local_lib_root = File::Spec->catfile( $ENV{ PWD },     'local' );
+  $local_bin      = File::Spec->catfile( $local_lib_root, qw( bin ) );
+  $local_lib      = File::Spec->catfile( $local_lib_root, qw( lib perl5 ) );
 }
 use lib $local_lib;
+
+# do not use "local" in the following line because then _which() will no see
+# the modified PATH
+$ENV{ PATH } = exists $ENV{ PATH } ? "$local_bin$Config{ path_sep }$ENV{ PATH }" : $local_bin;
 
 {
   no warnings 'once';
@@ -22,6 +27,8 @@ use lib $local_lib;
     my $make_fragment = '';
 
     $make_fragment .= <<"MAKE_FRAGMENT" if _which 'cpanm';
+export PATH := $ENV{ PATH }
+
 ifdef PERL5LIB
   PERL5LIB := $local_lib:\$(PERL5LIB)
 else
@@ -34,6 +41,9 @@ $local_lib_root: cpanfile
 
 .PHONY: installdeps
 installdeps: $local_lib_root
+MAKE_FRAGMENT
+
+    $make_fragment .= <<"MAKE_FRAGMENT";
 
 # runs the last modified test script
 .PHONY: testlm

@@ -3,6 +3,7 @@ use strict; use warnings;
 #>>>
 
 on 'configure' => sub {
+  requires 'App::cpanminus'                => '>= 1.7046';
   requires 'Config'                        => '0';
   requires 'ExtUtils::MakeMaker::CPANfile' => '0';
   requires 'File::Spec'                    => '0';
@@ -17,15 +18,17 @@ on 'runtime' => sub {
   requires 'Exporter'     => '0';
   requires 'Scalar::Util' => '0';
   requires 'strict'       => '0';
+  requires 'warnings'     => '0';
   recommends 'Time::HiRes' => '>= 1.9726';
 };
 
 on 'test' => sub {
   requires 'Test::More' => '0';
-  requires 'warnings'   => '0';
-  suggests 'Test::Pod' => '>= 1.26';
 };
 
 on 'develop' => sub {
-  suggests 'App::cpanminus' => '>= 1.7046';
+  requires 'Devel::Cover' => '0';
+  requires 'Test::Pod'    => '>= 1.26';
+  suggests 'App::CPANtoRPM'         => '0';
+  suggests 'App::Software::License' => '0';
 };
