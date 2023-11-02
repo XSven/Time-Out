@@ -7,27 +7,18 @@ use strict; use warnings;
 use Time::Out qw( timeout );
 
 use Test::More import => [ qw( is like ) ], tests => 3;
+use Test::Fatal qw( exception );
 
-# exception
-eval {
-  timeout 3 => sub {
-    die( "allo\n" );
-  };
-};
-is( $@, "allo\n" );
+is exception {
+  timeout 3 => sub { die( "allo\n" ); };
+},
+  "allo\n";
 
-# exception
-eval {
-  timeout 3 => sub {
-    die( "allo" );
-  };
-};
-like( $@, qr/^allo/ );
+like exception {
+  timeout 3 => sub { die( "allo" ); };
+}, qr/\Aallo/;
 
-# exception
-eval {
-  timeout 3 => sub {
-    die( [ 56 ] );
-  };
-};
-is( $@->[ 0 ], 56 );
+is exception {
+  timeout 3 => sub { die( [ 56 ] ); };
+}
+->[ 0 ], 56;
