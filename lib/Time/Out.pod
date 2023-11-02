@@ -1,40 +1,34 @@
+=pod
+
 =head1 NAME
 
 Time::Out - Easily timeout long running operations
-
 
 =head1 SYNOPSIS
 
   use Time::Out qw( timeout );
 
-  timeout $nb_secs => sub {
-    # your code goes were and will be interrupted if it runs
-    # for more than $nb_secs seconds.
-  } ;
-  if ($@) {
+  timeout $timeout => sub {
+    # your operation is implemented here and will be interrupted
+    # if it runs for more than $timeout seconds
+  };
+  if ( $@ ) {
     # operation timed-out
   }
 
-
 =head1 DESCRIPTION
 
-C<Time::Out> provides an easy interface to alarm(2) based timeouts.  Nested
-timeouts are supported.
+The C<Time::Out> module provides an easy interface to alarm(2) based timeouts.
+Nested timeouts are supported. The module exports the C<timeout()> function by
+default. The function returns whatever the code placed inside the subroutine
+reference returns:
 
+  use Time::Out qw( timeout );
 
-=head2 RETURN VALUE
-
-C<timeout()> returns whatever the code placed inside the block returns:
-
-  use Time::Out qw( timeout ) ;
-
-  my $rc = timeout 5 => sub {
-	return 7 ;
-  } ;
-  # $rc == 7
-
-
-=head1 C<Time::HiRes>
+  my $result = timeout 5 => sub {
+    return 7;
+  };
+  # $result == 7
 
 If C<Time::Out> sees that C<Time::HiRes> has been loaded, it will use that
 C<alarm()> function (if available) instead of the default one, allowing float
@@ -47,10 +41,9 @@ timeout values to be used effectively:
     # ...
   };
 
+=head1 CAVEATS
 
-=head1 BUGS
-
-=over 4 
+=over 2
 
 =item Blocking I/O on MSWin32
 
@@ -67,20 +60,19 @@ C<timeout()> as such:
 
   use Time::Out qw( timeout );
 
-  sub test {
+  sub foo {
     timeout 5, @_ => sub {
-      print "$_[0]\n";
+      @_;
     };
   }
-
-  test("hello") ; # will print "hello\n" ;
+  my @result = foo( 42, "Hello, World!" );
+  # @result == ( 42, "Hello, World!" );
 
 =back
 
 =head1 SEE ALSO
 
-eval, closures, alarm(2), L<Sys::AlarmCall>
-
+alarm(2), L<Sys::AlarmCall>
 
 =head1 AUTHOR
 
