@@ -6,7 +6,7 @@ use strict; use warnings;
 # Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
 
-use Test::More import => [ qw( diag is ok skip ) ], tests => 14;
+use Test::More import => [ qw( diag is ok plan skip subtest ) ], tests => 13;
 
 diag( "\nThe following tests use sleep() so please be patient...\n" );
 
@@ -16,13 +16,16 @@ timeout 2 => sub {
 };
 ok( $@ eq 'timeout' );
 
-# no timeout
-my $rc = timeout 3 => sub {
-  sleep( 1 );
-  56;
+subtest 'scalar context; no timeout' => sub {
+  plan tests => 2;
+
+  my $result = timeout 3 => sub {
+    sleep( 1 );
+    56;
+  };
+  is $@,      '', 'empty eval error';
+  is $result, 56, 'expected result';
 };
-is( $@,  '' );
-is( $rc, 56 );
 
 sub test_no_args {
   timeout 2 => sub {

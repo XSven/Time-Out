@@ -44,7 +44,7 @@ sub _timeout( $$@ ) {
   {
     # Disable alarm to prevent possible race condition between end of eval and execution of alarm(0) after eval.
     local $SIG{ ALRM } = sub { };
-    @ret = eval {
+    eval {
       local $SIG{ ALRM } = sub { die $code };
       if ( ( $prev_alarm ) && ( $prev_alarm < $seconds ) ) {
         # A shorter alarm was pending, let's use it instead.
@@ -52,14 +52,12 @@ sub _timeout( $$@ ) {
       } else {
         alarm( $seconds );
       }
-      my @ret;
-      if ( $context ) {    # list context
-        @ret = $code->( @code_args );
-      } else {             # scalar context
-        $ret[ 0 ] = $code->( @code_args );
-      }
+      defined $context
+        ? $context
+          ? @ret = $code->( @code_args )         # list context
+          : $ret[ 0 ] = $code->( @code_args )    # scalar context
+        : $code->( @code_args );                 # void context
       alarm( 0 );
-      @ret;
     };
     alarm( 0 );
     $eval_error = $@;
@@ -88,7 +86,12 @@ sub _timeout( $$@ ) {
     }
   }
 
-  return $context ? @ret : $ret[ 0 ];
+  return
+      defined $context
+    ? $context
+      ? return @ret    # list context
+      : $ret[ 0 ]      # scalar context
+    : ();              # void context
 }
 
 sub _assert_non_negative_number( $ ) {
