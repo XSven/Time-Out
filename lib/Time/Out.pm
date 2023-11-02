@@ -39,7 +39,7 @@ sub _timeout( $$@ ) {
   # disable previous timer and save the amount of time remaining on it
   my $prev_alarm = alarm( 0 );
   my $prev_time  = time();
-  my $eval_error = undef;
+  my $error_at   = undef;
   my @result     = ();
   {
     # TODO: What about using "IGNORE" instead of an empty subroutine?
@@ -63,7 +63,7 @@ sub _timeout( $$@ ) {
     };
     # TODO: Should we save the eval error before disabling the timer?
     alarm( 0 );
-    $eval_error = $@;
+    $error_at = $@;
   }
 
   my $new_time  = time();
@@ -76,15 +76,15 @@ sub _timeout( $$@ ) {
     kill 'ALRM', $$;
   }
 
-  if ( $eval_error ) {
-    if ( ( ref( $eval_error ) ) && ( $eval_error eq $code ) ) {
+  if ( $error_at ) {
+    if ( ( ref( $error_at ) ) && ( $error_at eq $code ) ) {
       $@ = 'timeout';
     } else {
-      if ( !ref( $eval_error ) ) {
-        chomp( $eval_error );
-        die( "$eval_error\n" );
+      if ( !ref( $error_at ) ) {
+        chomp( $error_at );
+        die( "$error_at\n" );
       } else {
-        die $eval_error;
+        die $error_at;
       }
     }
   }

@@ -10,11 +10,14 @@ use Test::More import => [ qw( diag is ok plan skip subtest ) ], tests => 13;
 
 diag( "\nThe following tests use sleep() so please be patient...\n" );
 
-# catch timeout
-timeout 2 => sub {
-  sleep( 3 );
+subtest 'void context; timeout' => sub {
+  plan tests => 1;
+
+  timeout 2 => sub {
+    sleep( 3 );
+  };
+  is $@, 'timeout', 'eval error was set to "timeout"';
 };
-ok( $@ eq 'timeout' );
 
 subtest 'scalar context; no timeout' => sub {
   plan tests => 2;
