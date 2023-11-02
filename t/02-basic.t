@@ -6,7 +6,7 @@ use strict; use warnings;
 # Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
 
-use Test::More import => [ qw( diag is ok plan skip subtest ) ], tests => 3;
+use Test::More import => [ qw( diag is is_deeply ok plan skip subtest ) ], tests => 4;
 
 subtest 'timeout: void context' => sub {
   plan tests => 1;
@@ -18,7 +18,7 @@ subtest 'timeout: void context' => sub {
   is $@, 'timeout', 'eval error was set to "timeout"';
 };
 
-subtest 'timeout: scalar context; echo argument passed to code' => sub {
+subtest 'no timeout: scalar context; echo argument passed to code' => sub {
   plan tests => 2;
 
   my $expected_result = 42;
@@ -28,6 +28,21 @@ subtest 'timeout: scalar context; echo argument passed to code' => sub {
   };
   is $@,          '',               'empty eval error';
   is $got_result, $expected_result, 'expected result';
+};
+
+subtest 'no timeout: list context; echo arguments passed to code' => sub {
+  plan tests => 2;
+
+  my $expected_result = [ 42, 'Hello, World!' ];
+  my $got_result      = [
+    timeout 3,
+    @$expected_result => sub {
+      select( undef, undef, undef, 1 );
+      @_;
+    }
+  ];
+  is $@, '', 'empty eval error';
+  is_deeply $got_result, $expected_result, 'expected result';
 };
 
 SKIP: {
