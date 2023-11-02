@@ -1,9 +1,12 @@
 Release history for Time-Out
 
-0.12  Mon Oct 30 14:25:52 CET 2023
+0.20  Thu Nov  2 16:50:32 CET 2023
       - Fix POD sample code [rt.cpan.org #100886] 
       - Nested timeouts require minimum Time::HiRes version
         [rt.cpan.org #84141]
+      - Handle calling context properly [rt.cpan.org #115809]
+      - Add missing test descriptions
+      - Add test scripts
 
 0.11  Tue Jan 15 11:36:27 EST 2008
       - Applied patch by Jens Heunemann to fix a race condition as well as some
