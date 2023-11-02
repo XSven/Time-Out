@@ -6,7 +6,6 @@ package Time::Out;
 
 our $VERSION = '0.11';
 
-use Carp         qw( carp );
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );
 
