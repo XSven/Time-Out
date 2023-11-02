@@ -17,7 +17,7 @@ sub _is_string ( $ );
 sub _timeout( $$@ );
 
 BEGIN {
-  #  If possible use Time::HiRes drop-in replacements.
+  # if possible use Time::HiRes drop-in replacements
   for ( qw( alarm time ) ) {
     Time::HiRes->import( $_ ) if Time::HiRes->can( $_ );
   }
@@ -30,32 +30,33 @@ sub timeout( $@ ) {
 }
 
 sub _timeout( $$@ ) {
-  my $secs      = _assert_non_negative_number shift;
+  # wallclock seconds
+  my $seconds   = _assert_non_negative_number shift;
   my $code      = _assert_plain_coderef shift;
   my @code_args = @_;
 
-  # Disable any pending alarms.
+  # disable previous timer and save the amount of time remaining on it
   my $prev_alarm = alarm( 0 );
   my $prev_time  = time();
-  my $dollar_at  = undef;
+  my $eval_error = undef;
   my @ret        = ();
   {
     # Disable alarm to prevent possible race condition between end of eval and execution of alarm(0) after eval.
     local $SIG{ ALRM } = sub { };
     @ret = eval {
       local $SIG{ ALRM } = sub { die $code };
-      if ( ( $prev_alarm ) && ( $prev_alarm < $secs ) ) {
+      if ( ( $prev_alarm ) && ( $prev_alarm < $seconds ) ) {
         # A shorter alarm was pending, let's use it instead.
         alarm( $prev_alarm );
       } else {
-        alarm( $secs );
+        alarm( $seconds );
       }
       my @ret = $code->( @code_args );
       alarm( 0 );
       @ret;
     };
     alarm( 0 );
-    $dollar_at = $@;
+    $eval_error = $@;
   }
 
   my $new_time  = time();
@@ -68,15 +69,15 @@ sub _timeout( $$@ ) {
     kill 'ALRM', $$;
   }
 
-  if ( $dollar_at ) {
-    if ( ( ref( $dollar_at ) ) && ( $dollar_at eq $code ) ) {
+  if ( $eval_error ) {
+    if ( ( ref( $eval_error ) ) && ( $eval_error eq $code ) ) {
       $@ = 'timeout';
     } else {
-      if ( !ref( $dollar_at ) ) {
-        chomp( $dollar_at );
-        die( "$dollar_at\n" );
+      if ( !ref( $eval_error ) ) {
+        chomp( $eval_error );
+        die( "$eval_error\n" );
       } else {
-        die $dollar_at;
+        die $eval_error;
       }
     }
   }

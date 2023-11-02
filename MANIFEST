@@ -13,3 +13,4 @@ t/03-exceptions.t
 t/04-pod.t
 t/05-RT-100886.t
 t/06-RT-84141.t
+t/07-RT-115809.t
