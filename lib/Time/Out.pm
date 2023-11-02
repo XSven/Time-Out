@@ -30,6 +30,7 @@ sub timeout( $@ ) {
 }
 
 sub _timeout( $$@ ) {
+  my $context = wantarray();
   # wallclock seconds
   my $seconds   = _assert_non_negative_number shift;
   my $code      = _assert_plain_coderef shift;
@@ -51,7 +52,12 @@ sub _timeout( $$@ ) {
       } else {
         alarm( $seconds );
       }
-      my @ret = $code->( @code_args );
+      my @ret;
+      if ( $context ) {    # list context
+        @ret = $code->( @code_args );
+      } else {             # scalar context
+        $ret[ 0 ] = $code->( @code_args );
+      }
       alarm( 0 );
       @ret;
     };
@@ -82,7 +88,7 @@ sub _timeout( $$@ ) {
     }
   }
 
-  return wantarray ? @ret : $ret[ 0 ];
+  return $context ? @ret : $ret[ 0 ];
 }
 
 sub _assert_non_negative_number( $ ) {
