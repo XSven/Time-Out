@@ -40,9 +40,11 @@ sub _timeout( $$@ ) {
   my $prev_alarm = alarm( 0 );
   my $prev_time  = time();
   my $eval_error = undef;
-  my @ret        = ();
+  my @result     = ();
   {
-    # Disable alarm to prevent possible race condition between end of eval and execution of alarm(0) after eval.
+    # TODO: What about using "IGNORE" instead of an empty subroutine?
+    # disable ALRM handling to prevent possible race condition between end of
+    # eval and execution of alarm(0) after eval
     local $SIG{ ALRM } = sub { };
     eval {
       local $SIG{ ALRM } = sub { die $code };
@@ -54,11 +56,12 @@ sub _timeout( $$@ ) {
       }
       defined $context
         ? $context
-          ? @ret = $code->( @code_args )         # list context
-          : $ret[ 0 ] = $code->( @code_args )    # scalar context
-        : $code->( @code_args );                 # void context
+          ? @result = $code->( @code_args )         # list context
+          : $result[ 0 ] = $code->( @code_args )    # scalar context
+        : $code->( @code_args );                    # void context
       alarm( 0 );
     };
+    # TODO: Should we save the eval error before disabling the timer?
     alarm( 0 );
     $eval_error = $@;
   }
@@ -89,9 +92,9 @@ sub _timeout( $$@ ) {
   return
       defined $context
     ? $context
-      ? return @ret    # list context
-      : $ret[ 0 ]      # scalar context
-    : ();              # void context
+      ? return @result    # list context
+      : $result[ 0 ]      # scalar context
+    : ();                 # void context
 }
 
 sub _assert_non_negative_number( $ ) {
