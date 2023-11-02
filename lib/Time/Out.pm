@@ -27,27 +27,30 @@ sub timeout( $@ ) {
 sub _timeout( $$@ ) {
   my $context = wantarray();
   # wallclock seconds
-  my $seconds   = assert_non_negative_number shift;
+  my $timeout   = assert_non_negative_number shift;
   my $code      = assert_plain_coderef shift;
   my @code_args = @_;
 
+  my $error_at;
+  # in scalar context store the result in the first array element
+  my @result;
+
   # disable previous timer and save the amount of time remaining on it
-  my $prev_alarm = alarm( 0 );
-  my $prev_time  = time();
-  my $error_at   = undef;
-  my @result     = ();
+  my $remaining_time_on_previous_timer = alarm( 0 );
+  my $start_time                       = time();
+
   {
-    # TODO: What about using "IGNORE" instead of an empty subroutine?
-    # disable ALRM handling to prevent possible race condition between end of
-    # eval and execution of alarm(0) after eval
-    local $SIG{ ALRM } = sub { };
+# https://stackoverflow.com/questions/1194113/whats-the-difference-between-ignoring-a-signal-and-telling-it-to-do-nothing-in
+# disable ALRM handling to prevent possible race condition between end of
+# eval and execution of alarm(0) after eval
+    local $SIG{ ALRM } = 'IGNORE';
     eval {
       local $SIG{ ALRM } = sub { die $code };
-      if ( ( $prev_alarm ) && ( $prev_alarm < $seconds ) ) {
-        # A shorter alarm was pending, let's use it instead.
-        alarm( $prev_alarm );
+      if ( $remaining_time_on_previous_timer and $remaining_time_on_previous_timer < $timeout ) {
+        # a shorter timer was pending, let's use it instead
+        alarm( $remaining_time_on_previous_timer );
       } else {
-        alarm( $seconds );
+        alarm( $timeout );
       }
       defined $context
         ? $context
@@ -56,18 +59,18 @@ sub _timeout( $$@ ) {
         : $code->( @code_args );                    # void context
       alarm( 0 );
     };
-    # TODO: Should we save the eval error before disabling the timer?
     alarm( 0 );
     $error_at = $@;
   }
 
-  my $new_time  = time();
-  my $new_alarm = $prev_alarm - ( $new_time - $prev_time );
-  if ( $new_alarm > 0 ) {
-    # Rearm old alarm with remaining time.
-    alarm( $new_alarm );
-  } elsif ( $prev_alarm ) {
-    # Old alarm has already expired.
+  my $elapsed_time = time() - $start_time;
+  my $new_timeout  = $remaining_time_on_previous_timer - $elapsed_time;
+
+  if ( $new_timeout > 0 ) {
+    # rearm previous timer with new timeout
+    alarm( $new_timeout );
+  } elsif ( $remaining_time_on_previous_timer ) {
+    # previous timer has already expired; send ALRM
     kill 'ALRM', $$;
   }
 
