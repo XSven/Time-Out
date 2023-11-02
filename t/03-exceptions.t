@@ -12,13 +12,14 @@ use Test::Fatal qw( exception );
 is exception {
   timeout 3 => sub { die( "allo\n" ); };
 },
-  "allo\n";
+  "allo\n",
+  'no timeout: code dies (exception is a string with trailing newline)';
 
 like exception {
-  timeout 3 => sub { die( "allo" ); };
-}, qr/\Aallo/;
+  timeout 3 => sub { die( 'allo' ); };
+}, qr/\Aallo/, 'no timeout: code dies (exception is a string without trailing newline)';
 
 is exception {
   timeout 3 => sub { die( [ 56 ] ); };
 }
-->[ 0 ], 56;
+->[ 0 ], 56, 'no timeout: code dies (exception is a plain array reference)';

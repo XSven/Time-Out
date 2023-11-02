@@ -23,6 +23,7 @@ on 'runtime' => sub {
 };
 
 on 'test' => sub {
+  requires 'IO::Handle'  => '0';
   requires 'Test::Fatal' => '0';
   requires 'Test::More'  => '0';
 };
