@@ -1,0 +1,11 @@
+severity = harsh
+#severity = cruel
+#severity = brutal
+
+verbose = %f: %m at line %l, column %c.  (Policy: %p, Severity: %s)\n
+
+[-Modules::RequireExplicitPackage]
+[-Subroutines::ProhibitSubroutinePrototypes]
+[-Subroutines::RequireArgUnpacking]
+[-Subroutines::RequireFinalReturn]
+[-ValuesAndExpressions::RequireInterpolationOfMetachars]

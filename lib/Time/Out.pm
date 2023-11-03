@@ -21,7 +21,7 @@ BEGIN {
 our @EXPORT_OK = qw( timeout );
 
 sub timeout( $@ ) {
-  my $context = wantarray();
+  my $context = wantarray;
   # wallclock seconds
   my $timeout   = assert_non_negative_number shift;
   my $code      = assert_plain_coderef pop;
@@ -32,8 +32,8 @@ sub timeout( $@ ) {
   my @result;
 
   # disable previous timer and save the amount of time remaining on it
-  my $remaining_time_on_previous_timer = alarm( 0 );
-  my $start_time                       = time();
+  my $remaining_time_on_previous_timer = alarm 0;
+  my $start_time                       = time;
 
   {
 # https://stackoverflow.com/questions/1194113/whats-the-difference-between-ignoring-a-signal-and-telling-it-to-do-nothing-in
@@ -41,21 +41,21 @@ sub timeout( $@ ) {
 # eval and execution of alarm(0) after eval
     local $SIG{ ALRM } = 'IGNORE';
     eval {
-      local $SIG{ ALRM } = sub { die $code };
+      local $SIG{ ALRM } = sub { die $code }; ## no critic (RequireCarping)
       if ( $remaining_time_on_previous_timer and $remaining_time_on_previous_timer < $timeout ) {
         # a shorter timer was pending, let's use it instead
-        alarm( $remaining_time_on_previous_timer );
+        alarm $remaining_time_on_previous_timer;
       } else {
-        alarm( $timeout );
+        alarm $timeout;
       }
       defined $context
         ? $context
           ? @result = $code->( @code_args )         # list context
           : $result[ 0 ] = $code->( @code_args )    # scalar context
         : $code->( @code_args );                    # void context
-      alarm( 0 );
+      alarm 0;
     };
-    alarm( 0 );
+    alarm 0;
     $error_at = $@;
   }
 
@@ -64,19 +64,19 @@ sub timeout( $@ ) {
 
   if ( $new_timeout > 0 ) {
     # rearm previous timer with new timeout
-    alarm( $new_timeout );
+    alarm $new_timeout;
   } elsif ( $remaining_time_on_previous_timer ) {
     # previous timer has already expired; send ALRM
     kill 'ALRM', $$;
   }
 
   if ( $error_at ) {
-    if ( ( ref( $error_at ) ) && ( $error_at eq $code ) ) {
+    if ( ( ref $error_at ) && ( $error_at eq $code ) ) {
       $@ = 'timeout';
     } else {
-      if ( !ref( $error_at ) ) {
-        chomp( $error_at );
-        die( "$error_at\n" );
+      if ( !ref $error_at ) {
+        chomp $error_at;
+        die "$error_at\n";
       } else {
         die $error_at;
       }

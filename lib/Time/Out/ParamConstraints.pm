@@ -17,7 +17,7 @@ sub _is_string ( $ );
 sub assert_non_negative_number( $ ) {
   _is_string $_[ 0 ]
     and looks_like_number $_[ 0 ]
-    and $_[ 0 ] !~ /\A(?:Inf(?:inity)?|NaN)\z/i
+    and $_[ 0 ] !~ /\A (?: Inf (?: inity )? | NaN ) \z/xi
     and $_[ 0 ] >= 0 ? $_[ 0 ] : _croakf 'value is not a non-negative number';
 }
 
