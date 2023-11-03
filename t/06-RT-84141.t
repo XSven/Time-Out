@@ -13,9 +13,8 @@ use Test::More import => [ qw( is plan ) ];
 plan $th_check ? ( skip_all => "Nested timeouts (Time::HiRes $minimum_th_version required)" ) : ( tests => 2 );
 
 for my $timeout ( ( 2148, 86400 ) ) {
-  my $ret;
-  timeout $timeout => sub {
-    $ret = alarm( 0 );
+  my $result = timeout $timeout => sub {
+    alarm 0;
   };
-  is $ret, $timeout;
+  is $result, $timeout, "disable timer and return the amount of time remaining on it ($timeout seconds)";
 }

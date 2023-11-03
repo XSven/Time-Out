@@ -48,8 +48,8 @@ subtest 'no timeout: list context; echo arguments passed to code' => sub {
 SKIP: {
   skip "alarm(2) doesn't interrupt blocking I/O on $^O", 1 if $^O eq 'MSWin32';
   require IO::Handle;
-  my $rh = new IO::Handle();
-  my $wh = new IO::Handle();
+  my $rh = IO::Handle->new;
+  my $wh = IO::Handle->new;
   pipe( $rh, $wh );
   $wh->autoflush( 1 );
   print $wh "\n";

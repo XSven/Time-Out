@@ -17,7 +17,7 @@ is exception {
 
 like exception {
   timeout 3 => sub { die( 'allo' ); };
-}, qr/\Aallo/, 'no timeout: code dies (exception is a string without trailing newline)';
+}, qr/\A allo /x, 'no timeout: code dies (exception is a string without trailing newline)';
 
 is exception {
   timeout 3 => sub { die( [ 56 ] ); };
