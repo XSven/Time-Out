@@ -2,7 +2,7 @@
 use strict; use warnings;
 #>>>
 
-use Test::More import => [ qw( plan ) ];
+use Test::More qw();
 
 use Test::Needs qw( Test::Perl::Critic );
 

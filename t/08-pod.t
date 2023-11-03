@@ -2,7 +2,7 @@
 use strict; use warnings;
 #>>>
 
-use Test::More import => [ qw( plan ) ];
+use Test::More qw();
 
 # ensure a recent version of Test::Pod; consider updating the cpanfile too
 use Test::Needs { 'Test::Pod' => 1.26 };
