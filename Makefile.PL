@@ -21,11 +21,11 @@ my %WriteMakefileArgs = (
     provides    => {
       'Time::Out' => {
         file    => 'lib/Time/Out.pm',
-        version => '0.11',
+        version => '0.20',
       },
       'Time::Out::ParamConstraints' => {
         file    => 'lib/Time/Out/ParamConstraints.pm',
-        version => '0.11',
+        version => '0.20',
       },
     },
     resources => {

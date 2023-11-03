@@ -3,7 +3,7 @@ use strict; use warnings;
 #>>>
 package Time::Out::ParamConstraints;
 
-our $VERSION = '0.11';
+our $VERSION = '0.20';
 
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );

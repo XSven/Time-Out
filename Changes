@@ -5,9 +5,10 @@ Release history for Time-Out
       - Nested timeouts require minimum Time::HiRes version
         [rt.cpan.org #84141]
       - Handle calling context properly [rt.cpan.org #115809]
+      - Change TAP producer: Test to Test::More
       - Add missing test descriptions
       - Rename test scripts and add new ones
-      - Change TAP producer: Test to Test::More
+      - Consider Perl::Critic feedback (work in progress)
 
 0.11  Tue Jan 15 11:36:27 EST 2008
       - Applied patch by Jens Heunemann to fix a race condition as well as some

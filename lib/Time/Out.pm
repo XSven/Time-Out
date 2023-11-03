@@ -4,7 +4,7 @@ use strict; use warnings;
 
 package Time::Out;
 
-our $VERSION = '0.11';
+our $VERSION = '0.20';
 
 use Exporter                    qw( import );
 use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef );
