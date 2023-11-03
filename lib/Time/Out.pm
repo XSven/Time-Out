@@ -8,6 +8,7 @@ our $VERSION = '0.20';
 
 use Exporter                    qw( import );
 use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef );
+use Try::Tiny                   qw( try catch );
 
 sub _timeout( $$@ );
 
@@ -40,7 +41,7 @@ sub timeout( $@ ) {
 # disable ALRM handling to prevent possible race condition between end of
 # eval and execution of alarm(0) after eval
     local $SIG{ ALRM } = 'IGNORE';
-    eval {
+    try {
       local $SIG{ ALRM } = sub { die $code }; ## no critic (RequireCarping)
       if ( $remaining_time_on_previous_timer and $remaining_time_on_previous_timer < $timeout ) {
         # a shorter timer was pending, let's use it instead
@@ -54,9 +55,10 @@ sub timeout( $@ ) {
           : $result[ 0 ] = $code->( @code_args )    # scalar context
         : $code->( @code_args );                    # void context
       alarm 0;
+    } catch {
+      $error_at = $_
     };
     alarm 0;
-    $error_at = $@;
   }
 
   my $elapsed_time = time() - $start_time;
