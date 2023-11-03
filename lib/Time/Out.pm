@@ -21,14 +21,10 @@ BEGIN {
 our @EXPORT_OK = qw( timeout );
 
 sub timeout( $@ ) {
-  _timeout shift, pop, @_;
-}
-
-sub _timeout( $$@ ) {
   my $context = wantarray();
   # wallclock seconds
   my $timeout   = assert_non_negative_number shift;
-  my $code      = assert_plain_coderef shift;
+  my $code      = assert_plain_coderef pop;
   my @code_args = @_;
 
   my $error_at;

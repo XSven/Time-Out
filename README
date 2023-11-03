@@ -4,13 +4,13 @@ Time::Out - Easily timeout long running operations
 
 EXAMPLE
 
-  use Time::Out qw(timeout);
+  use Time::Out qw( timeout );
 
-  # Time out the following code block after 5 seconds
+  # time out the following code block after 5 seconds
   timeout 5 => sub {
     # do something that might take a long time...
   } ;
-  if ($@){
+  if ( $@ ){
     # timeout occured...
   }
 
@@ -46,7 +46,7 @@ using "cpanm".
 
 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005-2008 Patrick LeBoutillier
+Copyright (c) 2005-2008 Patrick LeBoutillier, 2023 Sven Willenbuecher
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.

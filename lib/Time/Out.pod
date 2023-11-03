@@ -74,7 +74,9 @@ C<timeout()> as such:
 
 alarm(2), L<Sys::AlarmCall>
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+Sven Willenbuecher, E<lt>sven.willenbuecher@gmx.deE<gt>
 
 Patrick LeBoutillier, E<lt>patl@cpan.orgE<gt>
 
