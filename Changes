@@ -1,9 +1,14 @@
 Release history for Time-Out
 
+0.21  Sun Nov  5 15:16:08 CET 2023
+      - Use Try::Tiny
+      - Temporarily fix all Perl::Critic complaints
+      - Change license
+      - Properly classify some tests as release tests
+  
 0.20  Fri Nov  3 08:33:59 CET 2023
       - Fix POD sample code [rt.cpan.org #100886] 
-      - Nested timeouts require minimum Time::HiRes version
-        [rt.cpan.org #84141]
+      - Nested timeouts require minimum Time::HiRes version [rt.cpan.org #84141]
       - Handle calling context properly [rt.cpan.org #115809]
       - Change TAP producer: Test to Test::More
       - Add missing test descriptions
