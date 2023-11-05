@@ -82,9 +82,10 @@ Patrick LeBoutillier, E<lt>patl@cpan.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2005-2008 Patrick LeBoutillier, 2023 Sven Willenbuecher
+This software is copyright (c) 2005-2008 Patrick LeBoutillier, 2023 by Sven
+Willenbuecher.
 
-This library is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
+This is free software; you can redistribute it and/or modify it under the same
+terms as the Perl 5 programming language system itself.
 
 =cut

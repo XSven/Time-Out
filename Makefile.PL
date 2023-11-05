@@ -14,7 +14,7 @@ my %WriteMakefileArgs = (
   AUTHOR           => 'Sven Willenbuecher <sven.willenbuecher@gmx.de>',
   VERSION_FROM     => 'lib/Time/Out.pm',
   ABSTRACT_FROM    => 'lib/Time/Out.pod',
-  LICENSE          => 'Artistic_2',
+  LICENSE          => 'Perl_5',
   MIN_PERL_VERSION => '5.8.0',
   META_MERGE       => {
     'meta-spec' => { version => 2 },
