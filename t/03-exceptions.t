@@ -16,10 +16,10 @@ is exception {
   'no timeout: code dies (exception is a string with trailing newline)';
 
 like exception {
-  timeout 3 => sub { die( 'allo' ); };
+  timeout 3 => sub { die( 'allo' ); }; ## no critic (RequireCarping)
 }, qr/\A allo /x, 'no timeout: code dies (exception is a string without trailing newline)';
 
 is exception {
-  timeout 3 => sub { die( [ 56 ] ); };
+  timeout 3 => sub { die( [ 56 ] ); }; ## no critic (RequireCarping)
 }
 ->[ 0 ], 56, 'no timeout: code dies (exception is a plain array reference)';

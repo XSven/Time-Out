@@ -74,13 +74,13 @@ sub timeout( $@ ) {
 
   if ( $error_at ) {
     if ( ( ref $error_at ) && ( $error_at eq $code ) ) {
-      $@ = 'timeout';
+      $@ = 'timeout'; ## no critic (RequireLocalizedPunctuationVars)
     } else {
       if ( !ref $error_at ) {
         chomp $error_at;
         die "$error_at\n";
       } else {
-        die $error_at;
+        die $error_at; ## no critic (RequireCarping)
       }
     }
   }
