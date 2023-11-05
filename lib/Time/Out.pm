@@ -7,6 +7,7 @@ package Time::Out;
 our $VERSION = '0.21';
 
 use Exporter                    qw( import );
+use Scalar::Util                qw( blessed reftype );
 use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef );
 use Try::Tiny                   qw( try catch );
 
@@ -72,16 +73,19 @@ sub timeout( $@ ) {
     kill 'ALRM', $$;
   }
 
-  if ( $error_at ) {
-    if ( ( ref $error_at ) && ( $error_at eq $code ) ) {
-      $@ = 'timeout'; ## no critic (RequireLocalizedPunctuationVars)
-    } else {
-      if ( !ref $error_at ) {
-        chomp $error_at;
-        die "$error_at\n";
+  # rethrow possibly overloaded exception object that evaluates to false
+  if ( defined blessed( $error_at ) ) {
+    die $error_at; ## no  critic (RequireCarping)
+  } elsif ( $error_at ) {
+    if ( defined reftype( $error_at ) ) {
+      if ( $error_at eq $code ) {
+        $@ = 'timeout'; ## no critic (RequireLocalizedPunctuationVars);
       } else {
         die $error_at; ## no critic (RequireCarping)
       }
+    } else {
+      chomp $error_at;
+      die "$error_at\n";
     }
   }
 
