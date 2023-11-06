@@ -30,7 +30,7 @@ sub timeout( $@ ) {
   my $code      = assert_plain_coderef pop;
   my @code_args = @_;
 
-  my $error_at;
+  my $exception;
   # in scalar context store the result in the first array element
   my @result;
 
@@ -58,7 +58,7 @@ sub timeout( $@ ) {
         : $code->( @code_args );                    # void context
       alarm 0;
     } catch {
-      $error_at = ( is_plain_coderef $_ and $_ eq $code ) ? Time::Out::Exception->new( previous_error_at => $@ ) : $_;
+      $exception = ( is_plain_coderef $_ and $_ eq $code ) ? Time::Out::Exception->new( previous_exception => $@ ) : $_;
     };
     alarm 0;
   }
@@ -75,18 +75,18 @@ sub timeout( $@ ) {
   }
 
   # rethrow non-timeout exceptions
-  if ( defined blessed( $error_at ) ) {
-    if ( $error_at->isa( 'Time::Out::Exception' ) ) {
-      $@ = $error_at; ## no  critic (RequireLocalizedPunctuationVars)
+  if ( defined blessed( $exception ) ) {
+    if ( $exception->isa( 'Time::Out::Exception' ) ) {
+      $@ = $exception; ## no  critic (RequireLocalizedPunctuationVars)
       return;
     }
-    die $error_at; ## no  critic (RequireCarping)
-  } elsif ( $error_at ) {
-    if ( is_string $error_at ) {
-      chomp $error_at;
-      $error_at .= "\n";
+    die $exception; ## no  critic (RequireCarping)
+  } elsif ( $exception ) {
+    if ( is_string $exception ) {
+      chomp $exception;
+      $exception .= "\n";
     }
-    die $error_at; ## no  critic (RequireCarping)
+    die $exception; ## no  critic (RequireCarping)
   }
 
   return

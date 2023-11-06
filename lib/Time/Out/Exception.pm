@@ -9,6 +9,6 @@ use overload '""' => sub { 'timeout' }, fallback => 1;
 
 our $VERSION = '0.21';
 
-sub new { bless {}, __PACKAGE__ }
+sub new { shift; bless { @_ }, __PACKAGE__ }
 
 1;
