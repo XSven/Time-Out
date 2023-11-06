@@ -9,7 +9,7 @@ our $VERSION = '0.21';
 use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );
 use Time::Out::Exception        qw();
-use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
+use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef is_string );
 use Try::Tiny                   qw( try catch );
 
 sub _timeout( $$@ );
@@ -74,16 +74,19 @@ sub timeout( $@ ) {
     kill 'ALRM', $$;
   }
 
-  # rethrow possibly overloaded exception object that evaluates to false
+  # rethrow non-timeout exceptions
   if ( defined blessed( $error_at ) ) {
-    $error_at->isa( 'Time::Out::Exception' ) ? $@ = $error_at : die $error_at; ## no  critic (RequireCarping, RequireLocalizedPunctuationVars)
-  } elsif ( $error_at ) {
-    if ( defined reftype( $error_at ) ) {
-      die $error_at; ## no critic (RequireCarping)
-    } else {
-      chomp $error_at;
-      die "$error_at\n";
+    if ( $error_at->isa( 'Time::Out::Exception' ) ) {
+      $@ = $error_at; ## no  critic (RequireLocalizedPunctuationVars)
+      return;
     }
+    die $error_at; ## no  critic (RequireCarping)
+  } elsif ( $error_at ) {
+    if ( is_string $error_at ) {
+      chomp $error_at;
+      $error_at .= "\n";
+    }
+    die $error_at; ## no  critic (RequireCarping)
   }
 
   return

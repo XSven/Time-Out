@@ -8,14 +8,14 @@ our $VERSION = '0.21';
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );
 
-our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
+our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef is_plain_coderef is_string );
 
 sub is_plain_coderef ( $ );
+sub is_string ( $ );
 sub _croakf ( $@ );
-sub _is_string ( $ );
 
 sub assert_non_negative_number( $ ) {
-  _is_string $_[ 0 ]
+  is_string $_[ 0 ]
     and looks_like_number $_[ 0 ]
     and $_[ 0 ] !~ /\A (?: Inf (?: inity )? | NaN ) \z/xi
     and $_[ 0 ] >= 0 ? $_[ 0 ] : _croakf 'value is not a non-negative number';
@@ -29,7 +29,7 @@ sub is_plain_coderef( $ ) {
   not defined blessed $_[ 0 ] and ref $_[ 0 ] eq 'CODE';
 }
 
-sub _is_string( $ ) {
+sub is_string( $ ) {
   defined $_[ 0 ] and reftype \$_[ 0 ] eq 'SCALAR';
 }
 
