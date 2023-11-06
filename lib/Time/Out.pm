@@ -8,7 +8,8 @@ our $VERSION = '0.21';
 
 use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );
-use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef );
+use Time::Out::Exception        qw();
+use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
 use Try::Tiny                   qw( try catch );
 
 sub _timeout( $$@ );
@@ -57,7 +58,7 @@ sub timeout( $@ ) {
         : $code->( @code_args );                    # void context
       alarm 0;
     } catch {
-      $error_at = $_
+      $error_at = ( is_plain_coderef $_ and $_ eq $code ) ? Time::Out::Exception->new( previous_error_at => $@ ) : $_;
     };
     alarm 0;
   }
@@ -75,14 +76,10 @@ sub timeout( $@ ) {
 
   # rethrow possibly overloaded exception object that evaluates to false
   if ( defined blessed( $error_at ) ) {
-    die $error_at; ## no  critic (RequireCarping)
+    $error_at->isa( 'Time::Out::Exception' ) ? $@ = $error_at : die $error_at; ## no  critic (RequireCarping, RequireLocalizedPunctuationVars)
   } elsif ( $error_at ) {
     if ( defined reftype( $error_at ) ) {
-      if ( $error_at eq $code ) {
-        $@ = 'timeout'; ## no critic (RequireLocalizedPunctuationVars);
-      } else {
-        die $error_at; ## no critic (RequireCarping)
-      }
+      die $error_at; ## no critic (RequireCarping)
     } else {
       chomp $error_at;
       die "$error_at\n";

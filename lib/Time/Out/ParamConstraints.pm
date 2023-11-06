@@ -8,10 +8,10 @@ our $VERSION = '0.21';
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );
 
-our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef );
+our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
 
+sub is_plain_coderef ( $ );
 sub _croakf ( $@ );
-sub _is_plain_coderef ( $ );
 sub _is_string ( $ );
 
 sub assert_non_negative_number( $ ) {
@@ -22,10 +22,10 @@ sub assert_non_negative_number( $ ) {
 }
 
 sub assert_plain_coderef( $ ) {
-  _is_plain_coderef $_[ 0 ] ? $_[ 0 ] : _croakf 'value is not a code reference';
+  is_plain_coderef $_[ 0 ] ? $_[ 0 ] : _croakf 'value is not a code reference';
 }
 
-sub _is_plain_coderef( $ ) {
+sub is_plain_coderef( $ ) {
   not defined blessed $_[ 0 ] and ref $_[ 0 ] eq 'CODE';
 }
 

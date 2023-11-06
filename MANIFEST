@@ -3,6 +3,7 @@ Changes
 cpanfile
 lib/Time/Out.pm
 lib/Time/Out.pod
+lib/Time/Out/Exception.pm
 lib/Time/Out/ParamConstraints.pm
 LICENSE
 maint/AuthorExtensions.pl
