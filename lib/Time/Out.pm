@@ -10,7 +10,7 @@ use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );
 use Time::Out::Exception        qw();
 use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
-use Try::Tiny                   qw( try catch );
+use Try::Tiny                   qw( catch finally try );
 
 sub _timeout( $$@ );
 
@@ -59,8 +59,9 @@ sub timeout( $@ ) {
       alarm 0;
     } catch {
       $exception = ( is_plain_coderef $_ and $_ eq $code ) ? Time::Out::Exception->new( previous_exception => $@ ) : $_;
-    };
-    alarm 0;
+    } finally {
+      alarm 0;
+    }
   }
 
   my $elapsed_time = time() - $start_time;
@@ -74,14 +75,12 @@ sub timeout( $@ ) {
     kill 'ALRM', $$;
   }
 
-  # rethrow non-timeout exceptions
-  if ( defined blessed( $exception ) ) {
-    if ( $exception->isa( 'Time::Out::Exception' ) ) {
+  # handle exceptions
+  if ( defined $exception ) {
+    if ( defined blessed( $exception ) and $exception->isa( 'Time::Out::Exception' ) ) {
       $@ = $exception; ## no  critic (RequireLocalizedPunctuationVars)
       return;
     }
-    die $exception; ## no  critic (RequireCarping)
-  } elsif ( $exception ) {
     die $exception; ## no  critic (RequireCarping)
   }
 
