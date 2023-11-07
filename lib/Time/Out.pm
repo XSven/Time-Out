@@ -4,7 +4,7 @@ use strict; use warnings;
 
 package Time::Out;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );

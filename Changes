@@ -1,5 +1,9 @@
 Release history for Time-Out
 
+0.22  Tue Nov  7 09:57:51 CET 2023
+      - Streamline exception handling
+      - Introduce experimental timeout exception class
+
 0.21  Sun Nov  5 15:16:08 CET 2023
       - Use Try::Tiny
       - Temporarily fix all Perl::Critic complaints
