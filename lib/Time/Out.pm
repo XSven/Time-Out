@@ -9,7 +9,7 @@ our $VERSION = '0.21';
 use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );
 use Time::Out::Exception        qw();
-use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef is_string );
+use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
 use Try::Tiny                   qw( try catch );
 
 sub _timeout( $$@ );
@@ -82,10 +82,6 @@ sub timeout( $@ ) {
     }
     die $exception; ## no  critic (RequireCarping)
   } elsif ( $exception ) {
-    if ( is_string $exception ) {
-      chomp $exception;
-      $exception .= "\n";
-    }
     die $exception; ## no  critic (RequireCarping)
   }
 
