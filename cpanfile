@@ -18,6 +18,7 @@ on 'runtime' => sub {
   requires 'Exporter'     => '0';
   requires 'Scalar::Util' => '0';
   requires 'Try::Tiny'    => '0';
+  requires 'overload'     => '0';
   requires 'strict'       => '0';
   requires 'warnings'     => '0';
   recommends 'Time::HiRes' => '>= 1.9726';
