@@ -8,7 +8,7 @@ our $VERSION = '0.22';
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );
 
-our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef is_plain_coderef _is_string );
+our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
 
 sub is_plain_coderef ( $ );
 sub _is_string ( $ );
