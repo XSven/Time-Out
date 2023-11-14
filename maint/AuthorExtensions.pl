@@ -8,12 +8,15 @@ use Config         qw( %Config );
 use File::Basename qw( basename );
 use File::Spec     qw();
 
-my ( $local_lib_root, $local_bin, $local_lib );
+my ( $blib_lib, $local_lib_root, $local_bin, $local_lib, $prove_rc_file, $t_lib );
 
 BEGIN {
+  $blib_lib       = File::Spec->catfile( $ENV{ PWD },     qw( blib lib ) );
   $local_lib_root = File::Spec->catfile( $ENV{ PWD },     'local' );
   $local_bin      = File::Spec->catfile( $local_lib_root, qw( bin ) );
   $local_lib      = File::Spec->catfile( $local_lib_root, qw( lib perl5 ) );
+  $prove_rc_file  = File::Spec->catfile( $ENV{ PWD },     qw( t .proverc ) );
+  $t_lib          = File::Spec->catfile( $ENV{ PWD },     qw( t lib ) );
 }
 use lib $local_lib;
 
@@ -30,9 +33,9 @@ $ENV{ PATH } = exists $ENV{ PATH } ? "$local_bin$Config{ path_sep }$ENV{ PATH }"
 export PATH := $ENV{ PATH }
 
 ifdef PERL5LIB
-  PERL5LIB := $local_lib:\$(PERL5LIB)
+  PERL5LIB := @{ [ -d $t_lib ? "$t_lib:" : () ] }$blib_lib:$local_lib:\$(PERL5LIB)
 else
-  export PERL5LIB := $local_lib
+  export PERL5LIB := @{ [ -d $t_lib ? "$t_lib:" : () ] }$blib_lib:$local_lib
 endif
 
 $local_lib_root: cpanfile
@@ -56,8 +59,8 @@ MAKE_FRAGMENT
 
 # runs test scripts through TAP::Harness (prove) instead of Test::Harness (ExtUtils::MakeMaker)
 .PHONY: testp
-testp:
-	\$(NOECHO) \$(FULLPERLRUN) $prove\$(if \$(TEST_VERBOSE:0=), --verbose) --norc --recurse --shuffle --blib \$(TEST_FILES)
+testp: pure_all
+	\$(NOECHO) \$(FULLPERLRUN) $prove\$(if \$(TEST_VERBOSE:0=), --verbose) --norc@{ [ -f $prove_rc_file ? " --rc $prove_rc_file"  : () ] } --recurse --shuffle \$(TEST_FILES)
 MAKE_FRAGMENT
 
     $make_fragment .= <<"MAKE_FRAGMENT" if _which 'cover';
