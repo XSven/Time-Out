@@ -6,9 +6,10 @@ use strict; use warnings;
 # Time::HiRes. This should be avoided.
 use Time::Out qw( timeout );
 
-use Test::More import => [ qw( diag is is_deeply ok plan skip subtest ) ], tests => 5;
+use Test::More import => [ qw( is is_deeply plan skip subtest ) ], tests => 6;
+use POSIX qw( );
 
-subtest 'timeout: void context' => sub {
+subtest 'timeout: void context; keep the CPU busy' => sub {
   plan tests => 1;
 
   timeout 2 => sub {
@@ -16,6 +17,38 @@ subtest 'timeout: void context' => sub {
   };
   is $@, 'timeout', 'eval error was set to "timeout"';
 };
+
+SKIP: {
+  skip 'POSIX module does not provide pause() implementation', 1 unless POSIX->can( 'pause' );
+
+  subtest 'timeout: void context; pause the current process' => sub {
+    plan tests => 1;
+
+    timeout 2 => sub {
+      POSIX::pause();
+    };
+    is $@, 'timeout', 'eval error was set to "timeout"';
+  };
+}
+
+SKIP: {
+  skip "alarm(2) doesn't interrupt blocking I/O on $^O", 1 if $^O eq 'MSWin32';
+
+  subtest 'timeout: void context; blocking I/O' => sub {
+    plan tests => 1;
+    require IO::Handle;
+    my $rh = IO::Handle->new;
+    my $wh = IO::Handle->new;
+    pipe( $rh, $wh );
+    $wh->autoflush( 1 );
+    print $wh "\n";
+    my $line = <$rh>;
+    timeout 2 => sub {
+      $line = <$rh>;
+    };
+    is $@, 'timeout', 'eval error was set to "timeout"';
+  };
+}
 
 subtest 'no timeout: void context' => sub {
   plan tests => 1;
@@ -52,18 +85,3 @@ subtest 'no timeout: list context; echo arguments passed to code' => sub {
   is $@, '', 'empty eval error';
   is_deeply $got_result, $expected_result, 'expected result';
 };
-
-SKIP: {
-  skip "alarm(2) doesn't interrupt blocking I/O on $^O", 1 if $^O eq 'MSWin32';
-  require IO::Handle;
-  my $rh = IO::Handle->new;
-  my $wh = IO::Handle->new;
-  pipe( $rh, $wh );
-  $wh->autoflush( 1 );
-  print $wh "\n";
-  my $line = <$rh>;
-  timeout 2 => sub {
-    $line = <$rh>;
-  };
-  is $@, 'timeout', 'timeout: void context; blocking I/O; eval error was set to "timeout"';
-}
