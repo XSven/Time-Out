@@ -22,10 +22,10 @@ use lib $local_lib;
 
 # do not use "local" in the following line because then _which() will no see
 # the modified PATH
-$ENV{ PATH } = exists $ENV{ PATH } ? "$local_bin$Config{ path_sep }$ENV{ PATH }" : $local_bin;
+$ENV{ PATH } = exists $ENV{ PATH } ? "$local_bin$Config{ path_sep }$ENV{ PATH }" : $local_bin; ## no critic (RequireLocalizedPunctuationVars)
 
 {
-  no warnings 'once';
+  no warnings 'once'; ## no critic (ProhibitNoWarnings)
   *MY::postamble = sub {
     my $make_fragment = '';
 
@@ -85,7 +85,7 @@ MAKE_FRAGMENT
 
 sub _which ( $ ) {
   my ( $executable ) = @_;
-  for ( split /$Config{ path_sep }/, $ENV{ PATH } ) {
+  for ( split /$Config{ path_sep }/, $ENV{ PATH } ) { ## no critic (RequireExtendedFormatting)
     my $file = File::Spec->catfile( $_, $executable );
     return $file if -x $file;
   }
