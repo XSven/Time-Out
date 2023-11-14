@@ -7,7 +7,7 @@ package Time::Out::Exception;
 # https://stackoverflow.com/questions/23407085/why-does-eq-not-work-when-one-argument-has-overloaded-stringification
 use overload '""' => sub { 'timeout' }, fallback => 1;
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 sub new { shift; bless { @_ }, __PACKAGE__ }
 

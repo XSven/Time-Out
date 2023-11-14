@@ -1,5 +1,10 @@
 Release history for Time-Out
 
+0.23  Tue Nov 14 10:47:04 CET 2023
+      - Improve author extensions
+      - Add test case that times out the POSIX pause function
+      - Add missing runtime dependency
+
 0.22  Tue Nov  7 09:57:51 CET 2023
       - Streamline exception handling
       - Introduce experimental timeout exception class
