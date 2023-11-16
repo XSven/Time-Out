@@ -9,8 +9,8 @@ our $VERSION = '0.23';
 use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );
 use Time::Out::Exception        qw();
-use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
-use Try::Tiny                   qw( catch finally try );
+use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef );
+use Try::Tiny                   qw( finally try );
 
 BEGIN {
   # if possible use Time::HiRes drop-in replacements
@@ -42,7 +42,7 @@ sub timeout( $@ ) {
 # try block and the execution of alarm(0) in the finally block
     local $SIG{ ALRM } = 'IGNORE';
     try {
-      local $SIG{ ALRM } = sub { die $code }; ## no critic (RequireCarping)
+      local $SIG{ ALRM } = sub { die Time::Out::Exception->new( previous_exception => $@, timeout => $timeout ) }; ## no critic (RequireCarping)
       if ( $remaining_time_on_previous_timer and $remaining_time_on_previous_timer < $timeout ) {
         # a shorter timer was pending, let's use it instead
         alarm $remaining_time_on_previous_timer;
@@ -55,10 +55,9 @@ sub timeout( $@ ) {
           : $result[ 0 ] = $code->( @code_args )    # scalar context
         : $code->( @code_args );                    # void context
       alarm 0;
-    } catch {
-      $exception = ( is_plain_coderef $_ and $_ eq $code ) ? Time::Out::Exception->new( previous_exception => $@ ) : $_;
     } finally {
       alarm 0;
+      $exception = $_[ 0 ] if @_;
     }
   }
 
