@@ -12,8 +12,6 @@ use Time::Out::Exception        qw();
 use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef is_plain_coderef );
 use Try::Tiny                   qw( catch finally try );
 
-sub _timeout( $$@ );
-
 BEGIN {
   # if possible use Time::HiRes drop-in replacements
   for ( qw( alarm time ) ) {
@@ -40,8 +38,8 @@ sub timeout( $@ ) {
 
   {
 # https://stackoverflow.com/questions/1194113/whats-the-difference-between-ignoring-a-signal-and-telling-it-to-do-nothing-in
-# disable ALRM handling to prevent possible race condition between end of
-# eval and execution of alarm(0) after eval
+# disable ALRM handling to prevent possible race condition between the end of the
+# try block and the execution of alarm(0) in the finally block
     local $SIG{ ALRM } = 'IGNORE';
     try {
       local $SIG{ ALRM } = sub { die $code }; ## no critic (RequireCarping)
@@ -64,7 +62,7 @@ sub timeout( $@ ) {
     }
   }
 
-  my $elapsed_time = time() - $start_time;
+  my $elapsed_time = time - $start_time;
   my $new_timeout  = $remaining_time_on_previous_timer - $elapsed_time;
 
   if ( $new_timeout > 0 ) {
