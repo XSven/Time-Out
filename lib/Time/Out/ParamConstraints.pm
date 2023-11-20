@@ -8,29 +8,37 @@ our $VERSION = '0.23';
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );
 
-our @EXPORT_OK = qw( assert_non_negative_number assert_plain_coderef );
+our @EXPORT_OK = qw( assert_NonNegativeNumber assert_CodeRef );
 
-sub _is_plain_coderef ( $ );
-sub _is_string ( $ );
+sub _is_CodeRef ( $ );
+sub _is_String ( $ );
 sub _croakf ( $@ );
 
-sub assert_non_negative_number( $ ) {
-  _is_string $_[ 0 ]
-    and looks_like_number $_[ 0 ]
-    and $_[ 0 ] !~ /\A (?: Inf (?: inity )? | NaN ) \z/xi
-    and $_[ 0 ] >= 0 ? $_[ 0 ] : _croakf 'value is not a non-negative number';
+sub assert_NonNegativeNumber( $ ) {
+  my ( $value ) = @_;
+
+  _is_String $value
+    && looks_like_number $value
+    && $value !~ /\A (?: Inf (?: inity )? | NaN ) \z/xi
+    && $value >= 0 ? return $value : _croakf 'value is not a non-negative number';
 }
 
-sub assert_plain_coderef( $ ) {
-  _is_plain_coderef $_[ 0 ] ? $_[ 0 ] : _croakf 'value is not a code reference';
+sub assert_CodeRef( $ ) {
+  my ( $value ) = @_;
+
+  _is_CodeRef $value ? return $value : _croakf 'value is not a code reference';
 }
 
-sub _is_plain_coderef( $ ) {
-  not defined blessed $_[ 0 ] and ref $_[ 0 ] eq 'CODE';
+sub _is_CodeRef( $ ) {
+  my ( $value ) = @_;
+
+  return not defined blessed $value && ref $value eq 'CODE';
 }
 
-sub _is_string( $ ) {
-  defined $_[ 0 ] and reftype \$_[ 0 ] eq 'SCALAR';
+sub _is_String( $ ) {
+  my ( $value ) = @_;
+
+  return defined $value && reftype \$value eq 'SCALAR';
 }
 
 sub _croakf( $@ ) {

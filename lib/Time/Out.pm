@@ -9,7 +9,7 @@ our $VERSION = '0.23';
 use Exporter                    qw( import );
 use Scalar::Util                qw( blessed reftype );
 use Time::Out::Exception        qw();
-use Time::Out::ParamConstraints qw( assert_non_negative_number assert_plain_coderef );
+use Time::Out::ParamConstraints qw( assert_NonNegativeNumber assert_CodeRef );
 use Try::Tiny                   qw( finally try );
 
 BEGIN {
@@ -24,8 +24,8 @@ our @EXPORT_OK = qw( timeout );
 sub timeout( $@ ) {
   my $context = wantarray;
   # wallclock seconds
-  my $timeout   = assert_non_negative_number shift;
-  my $code      = assert_plain_coderef pop;
+  my $timeout   = assert_NonNegativeNumber shift;
+  my $code      = assert_CodeRef pop;
   my @code_args = @_;
 
   my $exception;
