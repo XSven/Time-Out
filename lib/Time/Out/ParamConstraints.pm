@@ -8,7 +8,7 @@ our $VERSION = '0.23';
 use Exporter     qw( import );
 use Scalar::Util qw( blessed looks_like_number reftype );
 
-our @EXPORT_OK = qw( assert_NonNegativeNumber assert_CodeRef is_InstanceOf );
+our @EXPORT_OK = qw( assert_NonNegativeNumber assert_CodeRef );
 
 sub _is_CodeRef ( $ );
 sub _is_String ( $ );
@@ -27,12 +27,6 @@ sub assert_CodeRef( $ ) {
   my ( $value ) = @_;
 
   _is_CodeRef $value ? return $value : _croakf 'value is not a code reference';
-}
-
-sub is_InstanceOf( $$ ) {
-  my ( $value, $class ) = @_;
-
-  return blessed $value && $value->isa( $class );
 }
 
 sub _is_CodeRef( $ ) {

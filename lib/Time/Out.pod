@@ -30,7 +30,7 @@ reference returns:
   };
   # $result == 7
 
-If C<Time::Out> sees that C<Time::HiRes> has been loaded, it will use that
+If C<Time::Out> sees that L<Time::HiRes> has been loaded, it will use that
 C<alarm()> function (if available) instead of the default one, allowing float
 timeout values to be used effectively:
 
@@ -67,6 +67,27 @@ C<timeout()> as such:
   }
   my @result = foo( 42, "Hello, World!" );
   # @result == ( 42, "Hello, World!" );
+
+=item Eval inside timeout
+
+If the affected code has its own exception handling using L<Try::Tiny> for
+example, the catch block has to be amended in a way so that it will rethrow an
+exception, if it refers to a timeout:
+
+  use Scalar::Util qw( blessed  );
+  use Time::Out    qw( timeout );
+  use Try::Tiny    qw( catch try );
+
+  timeout 5, sub {
+    try {
+      select( undef, undef, undef, 7 );
+      die "bad\n";
+    } catch {
+      # rethrow exception, if it refers to a timeout
+      die $_ if blessed $_ && $_->isa( 'Time::Out::Exception' );
+      # handle all other exceptions
+    }
+  };
 
 =back
 
