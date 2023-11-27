@@ -1,5 +1,9 @@
 Release history for Time-Out
 
+0.24  Mon Nov 27 08:11:23 CET 2023
+      - Document eval inside timeout handling [rt.cpan.org #128908]
+      - Use exception object instead of coderef in ALRM handler
+ 
 0.23  Tue Nov 14 10:47:04 CET 2023
       - Improve author extensions
       - Add test case that times out the POSIX pause function
