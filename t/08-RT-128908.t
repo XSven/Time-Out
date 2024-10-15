@@ -1,6 +1,5 @@
-#<<<
-use strict; use warnings;
-#>>>
+use strict;
+use warnings;
 
 use Scalar::Util qw( blessed  );
 use Time::Out    qw( timeout );

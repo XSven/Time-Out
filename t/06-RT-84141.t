@@ -1,6 +1,5 @@
-#<<<
-use strict; use warnings;
-#>>>
+use strict;
+use warnings;
 
 use Test::Needs { 'Time::HiRes' => 1.9726 };
 
