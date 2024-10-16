@@ -69,5 +69,11 @@
 # Avoid vim files.
 \B\.vimrc\b
 
+# Avoid ctags files.
+\btags$
+
+# Avoid cpanm local::lib install directory.
 \blocal\b
-\bREADME.md\b
+
+# Avoid .github directory.
+\B\.github\b

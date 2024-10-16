@@ -5,6 +5,8 @@ Release history for Time-Out
       - improve dependencies setup in cpanfile
       - improve README
       - use version pragma and dotted decimal version
+      - setup CI workflow that is based on the GitHub project
+        PerlToolsTeam/github_workflows
 
 0.24  Mon Nov 27 08:11:23 CET 2023
       - Document eval inside timeout handling [rt.cpan.org #128908]
