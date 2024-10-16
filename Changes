@@ -1,6 +1,6 @@
 Release history for Time-Out
 
-1.0.0 Tue Oct 15 17:11:19 CEST 2024
+1.0.0 Wed Oct 16 12:28:54 CEST 2024
       - update author extensions
       - improve dependencies setup in cpanfile
       - improve README
