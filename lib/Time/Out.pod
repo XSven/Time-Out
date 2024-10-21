@@ -89,11 +89,35 @@ exception, if it refers to a timeout:
     }
   };
 
+=item Destroy inside timeout
+
+If an object gets C<DESTROY>ed in the affected code and the timeout exception
+occurs then, the exception doesn't interrupt the affected code.
+
+ > If your DESTROY method throws an exception, this will not cause any control
+ > transfer beyond exiting the method. The exception will be reported to STDERR
+ > as a warning, marked "(in cleanup)", and Perl will continue with whatever
+ > it was doing before.
+
 =back
 
 =head1 SEE ALSO
 
-L<alarm(2)>, L<Sys::AlarmCall>
+=over
+
+=item *
+
+L<alarm(2)>
+
+=item *
+
+L<Sys::AlarmCall>
+
+=item *
+
+L<IO::SocketAlarm>
+
+=back
 
 =head1 AUTHORS
 
